@@ -209,6 +209,8 @@ M.cmpi = function()
   t:run(runCmd)
 end
 
-vim.api.nvim_create_user_command("Cmpi", M.cmpi, {})
+M.setup = function()
+  vim.api.nvim_create_user_command("Cmpi", M.cmpi, {})
+end
 
 return M

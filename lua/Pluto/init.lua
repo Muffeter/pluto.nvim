@@ -19,6 +19,11 @@ local defaults = {
     x = 0.5,
     y = 0.5,
   },
+  task = {
+    command = "gcc",
+    args = {},
+    output = nil
+  }
 }
 
 function Term:new()
@@ -28,6 +33,16 @@ function Term:new()
     terminal = nil,
     config = defaults,
   }, { __index = self })
+end
+
+function Term:setup(cfg)
+  if not cfg then
+    return
+  end
+
+  self.config = vim.tbl_deep_extend('force', self.config, cfg)
+
+  return self
 end
 
 function is_win_valid(win)
@@ -194,22 +209,29 @@ function Term:run(command)
   return self
 end
 
+local t = Term:new()
+
 M.cmpi = function()
-  local t = Term:new()
+  local task = t.config.task
 
   local current_file = vim.fn.expand('%')
   -- ignore relative path dot
   local sep = string.find(current_file, ".", 2, true)
   local output = string.sub(current_file, 1, sep - 1)
 
-  local command = "gcc " .. current_file .. " -o " .. output
+  if task.output then
+    output = task.output
+  end
+
+  local command = task.command .. " " .. current_file .. " -o " .. output
   t:open()
   t:run(command)
   local runCmd = output
   t:run(runCmd)
 end
 
-M.setup = function()
+M.setup = function(cfg)
+  t:setup(cfg)
   vim.api.nvim_create_user_command("Cmpi", M.cmpi, {})
 end
 

@@ -23,7 +23,8 @@ local defaults = {
     command = "gcc",
     args = {},
     output = nil
-  }
+  },
+  clear_output = true,
 }
 
 function Term:new()
@@ -232,6 +233,11 @@ M.cmpi = function()
   end
   local command = pathJoin({task.command, current_file, "-o", "./" .. output})
   t:open()
+
+  if t.config.clear_output then
+    t:run("clear")
+  end
+
   t:run(command)
   local runCmd = pathJoin({"./" .. output})
   t:run(runCmd)

@@ -233,7 +233,7 @@ M.cmpi = function()
   local command = pathJoin({task.command, current_file, "-o", "./" .. output})
   t:open()
   t:run(command)
-  local runCmd = output
+  local runCmd = pathJoin({"./" .. output})
   t:run(runCmd)
 end
 

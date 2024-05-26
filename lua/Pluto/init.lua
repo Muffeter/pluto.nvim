@@ -209,6 +209,14 @@ function Term:run(command)
   return self
 end
 
+local function pathJoin(path)
+  local result = ""
+  for i = 1, #path do
+    result = result .. path[i] .. " "
+  end
+  return result
+end
+
 local t = Term:new()
 
 M.cmpi = function()
@@ -222,8 +230,7 @@ M.cmpi = function()
   if task.output then
     output = task.output
   end
-
-  local command = task.command .. " " .. current_file .. " -o " .. output
+  local command = pathJoin({task.command, current_file, "-o", "./" .. output})
   t:open()
   t:run(command)
   local runCmd = output
